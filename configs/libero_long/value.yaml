@@ -1,0 +1,30 @@
+data: data/libero_long/LIBERO_Long.h5
+features: data/libero_long/radio_b.h5
+output_dir: checkpoints/libero_long/value
+seed: 0
+val_fraction: 0.1
+
+batch_size: 512
+num_workers: 2
+steps: 60000
+lr: 1.0e-4
+weight_decay: 0.01
+grad_clip: 1.0
+gamma: 0.95
+expectile: 0.75
+target_tau: 0.005
+log_every: 100
+save_every: 2500
+
+model:
+  history_len: 2
+  hidden_dim: 256
+  state_token_dim: 512
+  temporal_nhead: 8
+  temporal_layers: 2
+  temporal_dropout: 0.1
+  goal_bottleneck_dim: 1024
+  goal_mlp_hidden_mult: 2
+  lang_embed_dim: 128
+  lang_gru_hidden: 256
+  value_mlp_hidden_mult: 2

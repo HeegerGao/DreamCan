@@ -1,0 +1,31 @@
+diff --git a/diffsynth/pipelines/wan_video.py b/diffsynth/pipelines/wan_video.py
+index c1e4dfb..b20995d 100644
+--- a/diffsynth/pipelines/wan_video.py
++++ b/diffsynth/pipelines/wan_video.py
+@@ -1307,6 +1307,7 @@ def model_fn_wan_video(
+     use_gradient_checkpointing_offload: bool = False,
+     control_camera_latents_input = None,
+     fuse_vae_embedding_in_latents: bool = False,
++    clean_frame_mask: Optional[torch.Tensor] = None,
+     wantodance_refimage_feature = None,
+     wantodance_fps: float = 30.0,
+     music_feature = None,
+@@ -1374,10 +1375,14 @@ def model_fn_wan_video(
+ 
+     # Timestep
+     if dit.seperated_timestep and fuse_vae_embedding_in_latents:
+-        timestep = torch.concat([
+-            torch.zeros((1, latents.shape[3] * latents.shape[4] // 4), dtype=latents.dtype, device=latents.device),
+-            torch.ones((latents.shape[2] - 1, latents.shape[3] * latents.shape[4] // 4), dtype=latents.dtype, device=latents.device) * timestep
+-        ]).flatten()
++        if clean_frame_mask is not None:
++            mask = clean_frame_mask.to(device=latents.device).reshape(latents.shape[2], 1).to(latents.dtype)
++            timestep = ((1.0 - mask) * timestep.to(latents.dtype)).expand(latents.shape[2], latents.shape[3] * latents.shape[4] // 4).flatten()
++        else:
++            timestep = torch.concat([
++                torch.zeros((1, latents.shape[3] * latents.shape[4] // 4), dtype=latents.dtype, device=latents.device),
++                torch.ones((latents.shape[2] - 1, latents.shape[3] * latents.shape[4] // 4), dtype=latents.dtype, device=latents.device) * timestep
++            ]).flatten()
+         t = dit.time_embedding(sinusoidal_embedding_1d(dit.freq_dim, timestep).unsqueeze(0))
+         if use_unified_sequence_parallel and dist.is_initialized() and dist.get_world_size() > 1:
+             t_chunks = torch.chunk(t, get_sequence_parallel_world_size(), dim=1)

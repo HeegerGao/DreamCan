@@ -1,0 +1,13 @@
+torch==2.5.1
+torchvision==0.20.1
+accelerate==1.13.0
+numpy==1.26.4
+h5py
+pyyaml
+tqdm
+pillow
+imageio[ffmpeg]
+safetensors
+timm
+einops
+huggingface_hub

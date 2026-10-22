@@ -1,0 +1,47 @@
+data: data/libero_long/LIBERO_Long.h5
+stats: data/libero_long/LIBERO_Long_stats.json
+instructions: data/libero_long/instructions_decisionnce.npz
+radio_features: data/libero_long/radio_h.h5
+goal_features: data/libero_long/subgoal_features
+views: [image, wrist_image]
+state_keys: [state, joint_state]
+output_dir: checkpoints/libero_long/policy
+seed: 0
+
+batch_size: 16
+num_workers: 16
+max_steps: 250000
+cosine_steps: 500000
+warmup_steps: 2000
+lr: 3.0e-4
+weight_decay: 0.01
+no_weight_decay: [language_encoder, task_head]
+grad_clip: 1.0
+task_aux_weight: 0.05
+log_every: 100
+save_every: 50000
+
+augment:
+  crop_prob: 0.8
+  crop_scale: [0.7, 1.0]
+  state_noise: 0.02
+
+model:
+  state_dim: 15
+  action_dim: 7
+  history_len: 2
+  action_chunk_len: 16
+  num_views: 2
+  d_model: 512
+  nhead: 8
+  num_layers: 10
+  dim_feedforward: 2048
+  dropout: 0.1
+  radio_local_dim: 1280
+  radio_summary_dim: 3840
+  radio_patch_tokens: 196
+  goal_sequence_len: 10
+  goal_latent_tokens: 4
+  goal_perceiver_layers: 2
+  goal_drop_prob: 0.3
+  language_drop_prob: 0.3

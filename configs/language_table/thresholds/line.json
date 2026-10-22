@@ -1,0 +1,8 @@
+{
+ "end_soft_inliers": 5.782971000671387,
+ "end_separation": 0.1743859052658081,
+ "collapse_frac": 0.75,
+ "max_track_gap": 16.0,
+ "max_progress_drop": 0.1713523390195385,
+ "p90_track_disp": 48.95137358194136
+}
